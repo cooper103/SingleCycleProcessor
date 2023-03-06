@@ -2,33 +2,27 @@
 
 This project contains a verilog implementation of a single cycle ARM processor, using the Basys3 FPGA. Note that only a subset of the entire ISA is implemented.
 
-A detailed functional description is given below:
-SW0-SW15:
-All 16 switches are utilized for various purposes. SW0 is a reset switch that resets the LEDs
-when in Color Send mode. SW[3:1] have two purposes. Firstly, they are used to select the
-number of bits to send to the LED strip, and thus the number of LEDs to light up, determined as
-the binary value of the switches. They are also used to denote Automatic Color Cycle and Game
-mode (3’b110 and 3’b111 respectively). When the device is in Color Send mode, SW[15:4]
-denote the GRB bit patterns that will be sent to the LEDs. SW[15:12], SW[11:8], and SW[7:4]
-correspond to the Green, Red, and Blue channels respectively.
+A detailed functional description of the implementation on the Basys3 is given below:
 
-JA1:J1:
-The port JA1 is used for serial data transfer to the LEDs and should be connected to the DataIn
-line on the LEDs.
+BtnC:
+BtnC is used to simulate the ARM system clock, with each press stepping through an instruction.
 
-BTNC:
-BTNC is used at the “Go” signal for serial data transfer in Color Send mode. It is also used in
-Game mode to receive input from the user as the LEDs are flashing. BTNC does not have any
-functionality in Automatic Color Cycle mode.
+SW0:
+SW0 is utilized to reset the program counter when BtnC is pressed and SW0 is on.
 
-LED0:
-LED0 is used to denote a state in the SSStateMachine FSM. LED0 is assigned to be on when the
-“Ready2Go” signal is 1, meaning that when LED0 is on, the device is ready for serial data
-transfer.
+SW1:
+SW1 is utilized to display the machine code of the current instruction. When SW1 is high, the
+machine code of the current instruction is displayed, and when SW1 is low, the display will show
+the register specified by SW15-SW12.
 
-Seven-Segment Display:
-The seven-segment LED display is constantly driven as AN[3:0] = 4’b1110. This results in only
-the rightmost display being driven and is sufficient for the design’s purposes. The seven-segment
-LEDs will display the current score of Game mode, starting at 0 and incrementing to 7, at which
-point the user has won the game.
+SW15-SW12:
+SW15-SW12 specifies which register will be displayed on the seven-segment displays. The
+binary representation of the switches encodes the register to be displayed.
 
+SW11:
+Because the four displays can only display 4 hexadecimal values (16 bits), SW11 is used to
+select between the upper and lower portions of the register being displayed. If SW11 is high, the
+upper 16 bits are displayed, and if SW11 is low, the lower 16 bits are displayed.
+Seven-Segment Displays:
+The four seven-segment displays each display a hexadecimal value, with a total quantity of
+16-bits being represented.
